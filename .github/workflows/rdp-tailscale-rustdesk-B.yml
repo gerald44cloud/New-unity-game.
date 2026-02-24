@@ -7,7 +7,7 @@ on:
       ts_api_key:         { description: "Tailscale API key (device admin, no Bearer)", required: true }
       ts_authkey:         { description: "Tailscale Auth key (reusable or ephemeral)", required: true }
       quick_test:         { description: "Run 5-minute test", type: boolean, default: false }
-      runtime_minutes:    { description: "Runtime (max 3555555555555555555; default 3555555555555555555 when not test)", required: false, default: "3555555555555555555" }
+      runtime_minutes:    { description: "Runtime (max 1440; default 1440 when not test)", required: false, default: "1440" }
       do_purge:           { description: "Purge bullet* devices at start (single instance only)", required: false, default: "true" }
       cycles:             { description: "0=stop after this run; N=handoffs left incl this run", required: false, default: "0" }
       rdp_count:          { description: "How many RDP instances (1-10) [ignored if CRD provided]", required: false, default: "1" }
@@ -165,10 +165,10 @@ jobs:
 
           function Yes($v){ "$v" -match '^(?i:true|1|yes|on)$' }
           function IntOr($v,$d){ if("$v" -match '^\d+$'){ [int]$v } else { [int]$d } }
-          $runtime = IntOr("${{ inputs.runtime_minutes }}",3555555555555555555)
-          if (Yes("${{ inputs.quick_test }}")) { $runtime = 3555555555555555555}
-          if (-not (Yes("${{ inputs.quick_test }}")) -and $runtime -lt 6) { $runtime = 3555555555555555555 }
-          if ($runtime -gt 3555555555555555555) { $runtime = 3555555555555555555 }
+          $runtime = IntOr("${{ inputs.runtime_minutes }}",1440)
+          if (Yes("${{ inputs.quick_test }}")) { $runtime = 1440}
+          if (-not (Yes("${{ inputs.quick_test }}")) -and $runtime -lt 6) { $runtime = 1440 }
+          if ($runtime -gt 1440) { $runtime = 1440 }
           "RUNTIME_MINUTES=$runtime" | Out-File -Append $env:GITHUB_ENV
           Write-Host "Hostname: $hn  | Runtime: $runtime"
 
